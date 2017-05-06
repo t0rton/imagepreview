@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Dropzone from 'react-dropzone'
 import './App.css';
 
 class App extends Component {
@@ -6,6 +7,8 @@ class App extends Component {
     super(props);
     this.state = {
       imagePreviewUrl: '',
+      imageDrop: [],
+      file: [],
     }
   }
 
@@ -25,6 +28,17 @@ class App extends Component {
     reader.readAsDataURL(image)
   }
 
+  onDrop(files) {
+    console.log(files);
+    let reader = new FileReader();
+    reader.onloadend = (e) => {
+      this.setState({
+        imageDrop: reader.result,
+      });
+    }
+    reader.readAsDataURL(files[0])
+  }
+
   render() {
     const { imagePreviewUrl } = this.state;
 
@@ -41,6 +55,17 @@ class App extends Component {
         <input type="file" name="image" onChange={(e)=>this.previewImage(e)}/>
         <div>
           {$imagePreview}
+        </div>
+        <div className="dropzone">
+          <aside>
+            <h2>Dropped files</h2>
+            <Dropzone onDrop={this.onDrop.bind(this)}>
+              <p>Try dropping some files here, or click to select files to upload.</p>
+            </Dropzone>
+            <ul>
+              <img src={this.state.imageDrop} className="img-thumbmail" alt="preview-img" />
+            </ul>
+          </aside>
         </div>
       </div>
     );
